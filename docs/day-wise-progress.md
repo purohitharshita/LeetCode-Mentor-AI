@@ -28,4 +28,15 @@
 
 ---
 
-*Last updated: Day 2*
+## Day 3 — JWT Authentication
+
+- Built complete auth system: register, login, refresh, logout, GET /users/me
+- Implemented JWT access tokens (30 min) + refresh tokens (7 days) stored in Redis
+- Used `bcrypt` directly — dropped `passlib` which is incompatible with `bcrypt >= 4.0`
+- Fixed async SQLAlchemy lazy-load bug: used `selectinload` to eagerly load `user.profile`
+- Protected routes use `HTTPBearer` + `get_current_user` dependency injection pattern
+- All 5 endpoints verified via Swagger UI: register → login → /me → logout → refresh (401)
+
+---
+
+*Last updated: Day 3*

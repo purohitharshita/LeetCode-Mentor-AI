@@ -41,7 +41,7 @@ LeetCode-Mentor-AI/
 
 - [Architecture](docs/architecture.md) — product design, system architecture, data model, AI layers
 - [Tech Stack](docs/techstack.md) — every technology choice with alternatives and rationale
-- [Tables](docs/tables.md)  — every data model tables with detailed description and relational schema
+- [Tables](docs/tables.md)  — every data model tables with detailed description and relational schemalets 
 
 ## Tech Stack
 
