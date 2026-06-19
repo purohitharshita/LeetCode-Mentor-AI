@@ -39,4 +39,17 @@
 
 ---
 
-*Last updated: Day 3*
+## Day 4 — Problems API + Frontend Pages
+
+- Built 3 backend endpoints: GET /topics, GET /problems (filtered + paginated), GET /problems/{slug}
+- Built Pydantic schemas for problems: TopicResponse, ProblemListItem, ProblemDetail
+- Built problem service with `selectinload` for nested topic + hint relationships
+- Fixed count query bug: `select(func.count(Problem.id))` needed explicit `select_from(Problem)`
+- Built frontend: problems list page with topic/difficulty filters + pagination
+- Built problem detail page with description, examples, constraints, company tags
+- Built `HintAccordion` component — reveals hints one tier at a time (nudge → pseudocode)
+- Fixed Docker networking bug: `next.config.ts` proxy used `INTERNAL_API_URL=http://backend:8000` instead of `localhost`; required frontend image rebuild since `next.config.ts` is not in the volume mount
+
+---
+
+*Last updated: Day 4*
