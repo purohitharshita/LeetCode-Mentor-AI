@@ -1,4 +1,5 @@
-from sqlalchemy import func, select
+from sqlalchemy import String, cast, func, select
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -24,7 +25,8 @@ async def get_problems(
         if difficulty:
             q = q.where(Problem.difficulty == difficulty)
         if company:
-            q = q.where(Problem.companies.any(company))
+            # PostgreSQL @> operator: "array contains this value"
+            q = q.where(Problem.companies.op("@>")(cast([company], ARRAY(String()))))
         if topic:
             q = q.join(Problem.problem_topics).join(ProblemTopic.topic).where(
                 Topic.name == topic
