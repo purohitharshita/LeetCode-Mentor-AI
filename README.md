@@ -2,11 +2,11 @@
 
 AI-powered DSA interview preparation platform. Behaves like a real senior engineer mentoring you — personalized hints, concept explanations, weakness tracking, and progress analytics.
 
-Built with FastAPI, Next.js 15, PostgreSQL + pgvector, Redis, and Claude (Anthropic).
+Built with FastAPI, Next.js 15, PostgreSQL + pgvector, Redis, and Google Gemini.
 
 ## Quick Start
 
-**Prerequisites:** Docker Desktop, an Anthropic API key.
+**Prerequisites:** Docker Desktop, a Google Gemini API key (free at [aistudio.google.com](https://aistudio.google.com)).
 
 ```bash
 # 1. Clone and enter the repo
@@ -15,7 +15,7 @@ cd LeetCode-Mentor-AI
 
 # 2. Set up environment variables
 cp .env.example .env
-# Edit .env and add your ANTHROPIC_API_KEY
+# Edit .env and add your GEMINI_API_KEY
 
 # 3. Start the full stack
 docker compose up
@@ -41,7 +41,9 @@ LeetCode-Mentor-AI/
 
 - [Architecture](docs/architecture.md) — product design, system architecture, data model, AI layers
 - [Tech Stack](docs/techstack.md) — every technology choice with alternatives and rationale
-- [Tables](docs/tables.md)  — every data model tables with detailed description and relational schemalets 
+- [Tables](docs/tables.md) — every database table with columns, relationships, and decisions
+- [Authentication](docs/authentication.md) — JWT auth deep dive: bcrypt, access/refresh tokens, Redis revocation
+- [Day-wise Progress](docs/day-wise-progress.md) — daily build log
 
 ## Tech Stack
 
@@ -51,5 +53,5 @@ LeetCode-Mentor-AI/
 | Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 (async) |
 | Database | PostgreSQL 16 + pgvector |
 | Cache | Redis 7 |
-| LLM | Claude (Anthropic) |
+| LLM | Google Gemini (gemini-2.0-flash, free tier) |
 | Deployment | Railway |
