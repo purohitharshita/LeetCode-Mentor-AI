@@ -49,6 +49,8 @@
 - Built problem detail page with description, examples, constraints, company tags
 - Built `HintAccordion` component — reveals hints one tier at a time (nudge → pseudocode)
 - Fixed Docker networking bug: `next.config.ts` proxy used `INTERNAL_API_URL=http://backend:8000` instead of `localhost`; required frontend image rebuild since `next.config.ts` is not in the volume mount
+- Added company filter — fixed PostgreSQL array containment using `@>` operator (`Problem.companies.any()` was invalid)
+- Redesigned filter UI: replaced sidebar with horizontal filter bar — difficulty pills, company dropdown, topic dropdown with active filter chips
 
 ---
 
