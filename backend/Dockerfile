@@ -12,4 +12,4 @@ RUN uv sync --no-dev
 # Copy application code
 COPY . .
 
-CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-exclude", "*.lock", "--reload-exclude", ".venv"]

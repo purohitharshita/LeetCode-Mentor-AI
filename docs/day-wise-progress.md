@@ -54,4 +54,17 @@
 
 ---
 
-*Last updated: Day 4*
+## Day 5 — Onboarding, Login/Register Pages
+
+- Built `PATCH /api/v1/users/profile` and `GET /api/v1/users/profile` endpoints
+- Built `UpdateProfileRequest` schema with validation (experience level, companies, hours)
+- Built 3-step onboarding flow: experience level → target companies → daily schedule
+- Built attractive split-screen login and register pages with gradient branding panel
+- Built landing page (`/`) with "Get started" and "Sign in" CTAs
+- Auth flow: register → `/onboarding` (new users) or `/problems` (returning users)
+- Fixed recurring `WatchfilesRustInternalError` on `uv.lock` — excluded `*.lock` and `.venv` from uvicorn reload watcher in Dockerfile
+- Full flow verified: register → onboarding → problems → login → problems (skips onboarding)
+
+---
+
+*Last updated: Day 5*
