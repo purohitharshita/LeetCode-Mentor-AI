@@ -12,7 +12,7 @@ from app.schemas.mentor import (
     SessionResponse,
     StartSessionRequest,
 )
-from app.ai.gemini import GeminiError, RateLimitError
+from app.ai.groq_client import AIError, RateLimitError
 from app.services.mentor import get_session, send_message, start_session
 
 router = APIRouter()
@@ -66,7 +66,7 @@ async def chat_with_mentor(
         raise HTTPException(status_code=404, detail=str(e))
     except RateLimitError as e:
         raise HTTPException(status_code=429, detail=str(e))
-    except GeminiError as e:
+    except AIError as e:
         raise HTTPException(status_code=502, detail=str(e))
 
     return ChatResponse(

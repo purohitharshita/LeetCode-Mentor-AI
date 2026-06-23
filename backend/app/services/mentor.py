@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.ai.gemini import chat
+from app.ai.groq_client import chat
 from app.ai.mentor_prompt import build_opening_message, build_system_prompt
 from app.models.mentor import MentorMessage, MentorSession
 from app.models.problem import Problem, ProblemTopic
