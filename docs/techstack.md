@@ -214,28 +214,30 @@ Alembic tracks schema changes as versioned files and applies them in order — l
 
 ## 4. AI Stack
 
-### LLM: Google Gemini (`google-generativeai`)
+### LLM: Groq (`groq`)
 
 ```
-google-generativeai>=0.8.0
+groq>=0.12.0
 ```
 
-**Model:** `gemini-2.0-flash` — fast, capable, free tier.
+**Model:** `llama-3.3-70b-versatile` — fast inference, high quality, generous free tier.
 
-**Why Gemini over paid alternatives?**
+**Why Groq over alternatives?**
 
-| Option | Free Tier | Quality | Notes |
+| Option | Free Tier | Speed | Notes |
 |---|---|---|---|
-| **Google Gemini** | 1M tokens/day, 1500 req/day | Excellent | Chosen — most generous free tier |
-| Groq (Llama 3.3 70B) | ~14,400 req/day | Very good | OpenAI-compatible, fastest inference |
-| Anthropic Claude | No free tier | Best-in-class | Paid only |
+| **Groq (Llama 3.3 70B)** | 30 req/min, 14,400 req/day | ⚡ Fastest (~500 tok/s) | Chosen — best speed + free tier |
+| Google Gemini 2.0 Flash | 15 req/min, 1M tok/day | Moderate | Hit rate limits under testing |
+| Anthropic Claude | No free tier | Fast | Paid only |
 | OpenRouter | Select free models | Varies | Aggregator |
+
+**Why Groq over Gemini?** Started with Gemini but hit rate limits (15 req/min) during development. Groq's 30 req/min limit and ~500 tok/s inference speed makes it significantly better for a real-time mentor experience. Both use Llama-class models with comparable quality.
 
 **Why direct SDK over LangChain?**
 
 | Option | Pros | Cons |
 |---|---|---|
-| **Direct `google-generativeai`** | Full control, no abstraction overhead | More code for complex multi-step flows |
+| **Direct `groq` SDK** | Full control, OpenAI-compatible, no abstraction overhead | More code for complex multi-step flows |
 | LangChain | Pre-built patterns | Abstractions leak, version lock, adds complexity |
 | LiteLLM | Easy provider switching | Unnecessary overhead for single-provider MVP |
 
@@ -365,7 +367,7 @@ Database
 └── Redis 7
 
 AI Stack
-├── Google Gemini API — gemini-2.0-flash (LLM, free tier)
+├── Groq API — llama-3.3-70b-versatile (LLM, free tier)
 ├── sentence-transformers → OpenAI text-embedding-3-small
 ├── pgvector → Pinecone (vector storage)
 └── LangGraph (V2, agents only)
@@ -383,4 +385,4 @@ Code Quality
 
 ---
 
-*Last updated: 2026-06-18 — Switched LLM from Anthropic Claude to Google Gemini (free tier)*
+*Last updated: 2026-06-19 — Switched LLM from Gemini to Groq (llama-3.3-70b-versatile) for better rate limits and faster inference*

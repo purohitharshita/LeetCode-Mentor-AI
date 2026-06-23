@@ -67,4 +67,21 @@
 
 ---
 
-*Last updated: Day 5*
+## Day 6 — AI Mentor, Monaco Editor, Split-Screen Problem Page
+
+- Built Groq AI client (`groq_client.py`) with Llama 3.3 70B — started with Gemini but switched due to 15 req/min rate limit hitting repeatedly
+- Built Socratic system prompt (`mentor_prompt.py`) — 5-tier hint strategy, persona, user profile injection, "never give the answer" rules
+- Built mentor session API: `POST /sessions`, `GET /sessions/{id}`, `POST /sessions/{id}/chat`
+- Sessions store `context_snapshot` (system prompt) in DB so persona is consistent across the full session
+- Built `MentorChat` component with typing indicator, message bubbles, and "Review my code" shortcut
+- Built `CodeEditor` component wrapping Monaco Editor — VS Code dark theme, 6 languages, macOS-style toolbar
+- Full split-screen problem page redesign: problem/hints tabs + Monaco editor (left) + AI Mentor chat (right)
+- Added real LeetCode function signatures for all 47 problems × 5 languages (`starterCode.ts`)
+- Per-language code persistence — switching Java → Python → Java restores Java code
+- "Review my code" sends editor content directly to mentor — no copy-pasting
+- Rate limit errors (429) and service errors (502) shown as friendly chat messages instead of crashing
+- Wrote `docs/aimentor.md` — deep dive on Groq choice, system prompt design, session architecture, code review flow
+
+---
+
+*Last updated: Day 6*

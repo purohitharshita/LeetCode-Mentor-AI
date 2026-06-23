@@ -2,11 +2,11 @@
 
 AI-powered DSA interview preparation platform. Behaves like a real senior engineer mentoring you — personalized hints, concept explanations, weakness tracking, and progress analytics.
 
-Built with FastAPI, Next.js 15, PostgreSQL + pgvector, Redis, and Google Gemini.
+Built with FastAPI, Next.js 15, PostgreSQL + pgvector, Redis, and Groq (Llama 3.3 70B).
 
 ## Quick Start
 
-**Prerequisites:** Docker Desktop, a Google Gemini API key (free at [aistudio.google.com](https://aistudio.google.com)).
+**Prerequisites:** Docker Desktop, a Groq API key (free at [console.groq.com](https://console.groq.com)).
 
 ```bash
 # 1. Clone and enter the repo
@@ -15,7 +15,7 @@ cd LeetCode-Mentor-AI
 
 # 2. Set up environment variables
 cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY
+# Edit .env and add your GROQ_API_KEY
 
 # 3. Start the full stack
 docker compose up
@@ -43,6 +43,7 @@ LeetCode-Mentor-AI/
 - [Tech Stack](docs/techstack.md) — every technology choice with alternatives and rationale
 - [Tables](docs/tables.md) — every database table with columns, relationships, and decisions
 - [Authentication](docs/authentication.md) — JWT auth deep dive: bcrypt, access/refresh tokens, Redis revocation
+- [AI Mentor](docs/aimentor.md) — Groq + Llama 3.3 70B, Socratic system prompt, session architecture, code review flow
 - [Day-wise Progress](docs/day-wise-progress.md) — daily build log
 
 ## Tech Stack
@@ -53,5 +54,5 @@ LeetCode-Mentor-AI/
 | Backend | Python 3.12, FastAPI, SQLAlchemy 2.0 (async) |
 | Database | PostgreSQL 16 + pgvector |
 | Cache | Redis 7 |
-| LLM | Google Gemini (gemini-2.0-flash, free tier) |
+| LLM | Groq — Llama 3.3 70B (free tier, 30 req/min) |
 | Deployment | Railway |
