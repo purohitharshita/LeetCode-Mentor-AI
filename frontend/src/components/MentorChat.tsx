@@ -87,7 +87,7 @@ export default function MentorChat({
         </div>
         <div>
           <p className="text-sm font-semibold text-gray-900 dark:text-white">AI Mentor</p>
-          <p className="text-xs text-green-500">Online · Powered by Gemini</p>
+          <p className="text-xs text-green-500">Online · Powered by Groq</p>
         </div>
       </div>
 

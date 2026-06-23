@@ -33,13 +33,6 @@ export default function CodeEditor({
   onChange,
   onLanguageChange,
 }: CodeEditorProps) {
-  function handleLanguageChange(lang: string) {
-    onLanguageChange(lang);
-    if (!code || code === STARTERS[language]) {
-      onChange(STARTERS[lang] ?? "");
-    }
-  }
-
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
       {/* Toolbar */}
@@ -54,7 +47,7 @@ export default function CodeEditor({
         </div>
         <select
           value={language}
-          onChange={(e) => handleLanguageChange(e.target.value)}
+          onChange={(e) => onLanguageChange(e.target.value)}
           className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
         >
           {LANGUAGES.map((l) => (

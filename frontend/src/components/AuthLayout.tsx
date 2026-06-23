@@ -48,7 +48,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         </div>
 
         <p className="relative z-10 text-xs text-blue-200">
-          Built with FastAPI, Next.js, and Google Gemini
+          Built with FastAPI, Next.js, and Google Groq
         </p>
       </div>
 

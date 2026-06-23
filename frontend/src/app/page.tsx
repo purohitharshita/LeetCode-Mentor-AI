@@ -38,7 +38,7 @@ export default function Home() {
           <span>·</span>
           <span>18 DSA topics</span>
           <span>·</span>
-          <span>Powered by Gemini</span>
+          <span>Powered by Groq</span>
         </div>
       </div>
     </main>

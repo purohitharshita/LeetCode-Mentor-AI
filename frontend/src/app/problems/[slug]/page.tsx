@@ -8,16 +8,14 @@ import HintAccordion from "@/components/HintAccordion";
 import MentorChat from "@/components/MentorChat";
 import { fetchProblem } from "@/lib/problems";
 import { startSession, sendMessage } from "@/lib/mentor";
+import { getStarterCode } from "@/lib/starterCode";
+import type { Language } from "@/lib/starterCode";
 import type { ProblemDetail } from "@/lib/problems";
 import type { MentorMessage, MentorSession } from "@/lib/mentor";
 
 const CodeEditor = dynamic(() => import("@/components/CodeEditor"), { ssr: false });
 
 type Tab = "problem" | "hints";
-
-const STARTER_CODE: Record<string, string> = {
-  python: "class Solution:\n    def solve(self):\n        pass\n",
-};
 
 export default function ProblemDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -28,8 +26,15 @@ export default function ProblemDetailPage() {
   const [notFound, setNotFound] = useState(false);
 
   const [activeTab, setActiveTab] = useState<Tab>("problem");
-  const [code, setCode] = useState(STARTER_CODE.python);
-  const [language, setLanguage] = useState("python");
+  const [language, setLanguage] = useState<Language>("python");
+  const [codePerLanguage, setCodePerLanguage] = useState<Record<string, string>>(
+    () => ({ python: getStarterCode(slug, "python") })
+  );
+  const code = codePerLanguage[language] ?? getStarterCode(slug, language as Language);
+
+  function setCode(val: string) {
+    setCodePerLanguage((prev) => ({ ...prev, [language]: val }));
+  }
 
   const [session, setSession] = useState<MentorSession | null>(null);
   const [messages, setMessages] = useState<MentorMessage[]>([]);
@@ -75,7 +80,7 @@ export default function ProblemDetailPage() {
       const detail = err?.response?.data?.detail;
       const errorContent =
         status === 429
-          ? "⏳ Gemini rate limit reached. Please wait a minute and try again."
+          ? "⏳ Groq rate limit reached. Please wait a minute and try again."
           : status === 502
           ? "⚠️ AI service is temporarily unavailable. Please try again shortly."
           : detail ?? "Something went wrong. Please try again.";
@@ -92,9 +97,46 @@ export default function ProblemDetailPage() {
     }
   }
 
+  function handleLanguageChange(lang: Language) {
+    setLanguage(lang);
+    // Only load starter if user hasn't written anything in this language yet
+    setCodePerLanguage((prev) => ({
+      ...prev,
+      [lang]: prev[lang] ?? getStarterCode(slug, lang),
+    }));
+  }
+
   async function handleSendWithCode() {
-    if (!session || !code.trim()) return;
-    await handleSend("Can you review my code and tell me what's wrong or what I can improve?");
+    if (!session) return;
+    const currentCode = code.trim();
+    if (!currentCode) return;
+
+    const userMsg: MentorMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: "Please review my code.",
+      created_at: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, userMsg]);
+    setMentorLoading(true);
+    try {
+      const aiMsg = await sendMessage(session.id, "Please review my code and tell me what's wrong or what I can improve.", currentCode);
+      setMessages((prev) => [...prev, aiMsg]);
+    } catch (err: any) {
+      const status = err?.response?.status;
+      const errorContent =
+        status === 429
+          ? "⏳ Rate limit reached. Please wait a moment and try again."
+          : "Something went wrong. Please try again.";
+      setMessages((prev) => [...prev, {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: errorContent,
+        created_at: new Date().toISOString(),
+      }]);
+    } finally {
+      setMentorLoading(false);
+    }
   }
 
   if (loading) {
@@ -262,7 +304,7 @@ export default function ProblemDetailPage() {
               code={code}
               language={language}
               onChange={setCode}
-              onLanguageChange={setLanguage}
+              onLanguageChange={handleLanguageChange}
             />
           </div>
         </div>
