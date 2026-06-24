@@ -10,7 +10,7 @@ Built with FastAPI, Next.js 15, PostgreSQL + pgvector, Redis, and Groq (Llama 3.
 
 ```bash
 # 1. Clone and enter the repo
-git clone https://github.com/your-username/LeetCode-Mentor-AI.git
+git clone https://github.com/purohitharshita/LeetCode-Mentor-AI.git
 cd LeetCode-Mentor-AI
 
 # 2. Set up environment variables
