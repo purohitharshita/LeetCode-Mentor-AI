@@ -6,10 +6,12 @@ import dynamic from "next/dynamic";
 import DifficultyBadge from "@/components/DifficultyBadge";
 import HintAccordion from "@/components/HintAccordion";
 import MentorChat from "@/components/MentorChat";
+import SubmitAttempt from "@/components/SubmitAttempt";
 import { fetchProblem } from "@/lib/problems";
 import { startSession, sendMessage } from "@/lib/mentor";
 import { getStarterCode } from "@/lib/starterCode";
 import type { Language } from "@/lib/starterCode";
+import type { Outcome } from "@/lib/attempts";
 import type { ProblemDetail } from "@/lib/problems";
 import type { MentorMessage, MentorSession } from "@/lib/mentor";
 
@@ -40,6 +42,18 @@ export default function ProblemDetailPage() {
   const [messages, setMessages] = useState<MentorMessage[]>([]);
   const [mentorLoading, setMentorLoading] = useState(false);
   const [sessionStarting, setSessionStarting] = useState(false);
+
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [startTime] = useState(() => Date.now());
+  const [submittedOutcome, setSubmittedOutcome] = useState<Outcome | null>(null);
+
+  function getElapsed() {
+    return Math.floor((Date.now() - startTime) / 1000);
+  }
+
+  function handleAttemptSubmitted(outcome: Outcome) {
+    setSubmittedOutcome(outcome);
+  }
 
   useEffect(() => {
     fetchProblem(slug)
@@ -293,19 +307,50 @@ export default function ProblemDetailPage() {
                 <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
                   Reveal hints one at a time. Try the problem before using them.
                 </p>
-                <HintAccordion hints={problem.hints} />
+                <HintAccordion
+                  hints={problem.hints}
+                  onHintRevealed={() => setHintsUsed((h) => h + 1)}
+                />
               </div>
             )}
           </div>
 
           {/* Code editor */}
-          <div className="h-[42%] border-t border-gray-200 p-3 dark:border-gray-700">
+          <div className="h-[42%] border-t border-gray-200 p-3 pb-2 dark:border-gray-700">
             <CodeEditor
               code={code}
               language={language}
               onChange={setCode}
               onLanguageChange={handleLanguageChange}
             />
+          </div>
+
+          {/* Submit attempt */}
+          <div className="border-t border-gray-200 px-3 py-2 dark:border-gray-700">
+            {submittedOutcome ? (
+              <div className={`rounded-lg px-4 py-2 text-center text-sm font-medium ${
+                submittedOutcome === "solved"
+                  ? "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400"
+                  : submittedOutcome === "partial"
+                  ? "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400"
+                  : "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400"
+              }`}>
+                Attempt saved — {submittedOutcome === "solved" ? "Great work! 🎉" : submittedOutcome === "partial" ? "Keep going!" : "Come back to this one!"}
+              </div>
+            ) : (
+              problem && (
+                <SubmitAttempt
+                  problemId={problem.id}
+                  problemSlug={slug}
+                  language={language}
+                  hintsUsed={hintsUsed}
+                  hintTiersUsed={[]}
+                  code={code}
+                  elapsedSeconds={getElapsed()}
+                  onSubmitted={handleAttemptSubmitted}
+                />
+              )
+            )}
           </div>
         </div>
 

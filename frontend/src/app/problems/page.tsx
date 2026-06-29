@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import ProblemCard from "@/components/ProblemCard";
 import DifficultyBadge from "@/components/DifficultyBadge";
+import MasteryBar from "@/components/MasteryBar";
 import { fetchProblems, fetchTopics } from "@/lib/problems";
 import type { ProblemListItem, Topic } from "@/lib/problems";
 
@@ -78,6 +79,11 @@ export default function ProblemsPage() {
               </button>
             )}
           </p>
+        </div>
+
+        {/* Mastery bar */}
+        <div className="mb-6">
+          <MasteryBar />
         </div>
 
         {/* Filter bar */}

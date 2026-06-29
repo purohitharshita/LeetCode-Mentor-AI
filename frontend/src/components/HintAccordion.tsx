@@ -5,6 +5,7 @@ import type { ProblemHint } from "@/lib/problems";
 
 interface HintAccordionProps {
   hints: ProblemHint[];
+  onHintRevealed?: (tier: number) => void;
 }
 
 const TIER_LABELS: Record<number, string> = {
@@ -14,7 +15,7 @@ const TIER_LABELS: Record<number, string> = {
   4: "Pseudocode",
 };
 
-export default function HintAccordion({ hints }: HintAccordionProps) {
+export default function HintAccordion({ hints, onHintRevealed }: HintAccordionProps) {
   const [revealed, setReveal] = useState(0);
 
   const sorted = [...hints].sort((a, b) => a.tier - b.tier);
@@ -37,7 +38,7 @@ export default function HintAccordion({ hints }: HintAccordionProps) {
               {!isUnlocked && (
                 <button
                   disabled={!isNext}
-                  onClick={() => setReveal((r) => r + 1)}
+                  onClick={() => { setReveal((r) => r + 1); onHintRevealed?.(hint.tier); }}
                   className={`rounded-md px-3 py-1 text-xs font-medium transition ${
                     isNext
                       ? "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
