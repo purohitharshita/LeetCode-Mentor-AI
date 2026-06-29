@@ -36,24 +36,22 @@ export default function CodeEditor({
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
       {/* Toolbar */}
-      <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-800/50">
+      <div className="flex items-center justify-between border-b border-[#2d2d4e] bg-[#13131f] px-4 py-2">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
-            <div className="h-3 w-3 rounded-full bg-red-400" />
-            <div className="h-3 w-3 rounded-full bg-yellow-400" />
-            <div className="h-3 w-3 rounded-full bg-green-400" />
+            <div className="h-3 w-3 rounded-full bg-red-500/70" />
+            <div className="h-3 w-3 rounded-full bg-yellow-500/70" />
+            <div className="h-3 w-3 rounded-full bg-green-500/70" />
           </div>
-          <span className="text-xs text-gray-400">solution</span>
+          <span className="text-xs text-[#4a4a6a]">solution</span>
         </div>
         <select
           value={language}
           onChange={(e) => onLanguageChange(e.target.value)}
-          className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+          className="rounded-lg border border-[#2d2d4e] bg-[#0d0d1a] px-2 py-1 text-xs text-[#a0a0c0] focus:border-violet-500 focus:outline-none"
         >
           {LANGUAGES.map((l) => (
-            <option key={l.value} value={l.value}>
-              {l.label}
-            </option>
+            <option key={l.value} value={l.value}>{l.label}</option>
           ))}
         </select>
       </div>

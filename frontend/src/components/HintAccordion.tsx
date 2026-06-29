@@ -17,7 +17,6 @@ const TIER_LABELS: Record<number, string> = {
 
 export default function HintAccordion({ hints, onHintRevealed }: HintAccordionProps) {
   const [revealed, setReveal] = useState(0);
-
   const sorted = [...hints].sort((a, b) => a.tier - b.tier);
 
   return (
@@ -27,34 +26,33 @@ export default function HintAccordion({ hints, onHintRevealed }: HintAccordionPr
         const isNext = idx === revealed;
 
         return (
-          <div
-            key={hint.tier}
-            className="rounded-lg border border-gray-200 dark:border-gray-700"
-          >
+          <div key={hint.tier} className="rounded-xl border border-[#2d2d4e] bg-[#13131f] overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Hint {hint.tier} — {TIER_LABELS[hint.tier] ?? "Hint"}
+              <span className="text-sm font-medium text-[#a0a0c0]">
+                Hint {hint.tier} —{" "}
+                <span className="text-violet-400">{TIER_LABELS[hint.tier] ?? "Hint"}</span>
               </span>
               {!isUnlocked && (
                 <button
                   disabled={!isNext}
                   onClick={() => { setReveal((r) => r + 1); onHintRevealed?.(hint.tier); }}
-                  className={`rounded-md px-3 py-1 text-xs font-medium transition ${
+                  className={`rounded-lg px-3 py-1 text-xs font-medium transition ${
                     isNext
-                      ? "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
-                      : "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800"
+                      ? "bg-violet-600 text-white hover:bg-violet-700 cursor-pointer"
+                      : "bg-[#2d2d4e] text-[#4a4a6a] cursor-not-allowed"
                   }`}
                 >
-                  {isNext ? "Reveal" : "Locked"}
+                  {isNext ? "Reveal" : "🔒 Locked"}
                 </button>
+              )}
+              {isUnlocked && (
+                <span className="text-xs text-green-400">✓ Revealed</span>
               )}
             </div>
 
             {isUnlocked && (
-              <div className="border-t border-gray-200 px-4 py-3 dark:border-gray-700">
-                <p className="whitespace-pre-wrap text-sm text-gray-600 dark:text-gray-400">
-                  {hint.content}
-                </p>
+              <div className="border-t border-[#2d2d4e] bg-[#0d0d1a] px-4 py-3">
+                <p className="whitespace-pre-wrap text-sm text-[#a0a0c0]">{hint.content}</p>
               </div>
             )}
           </div>
@@ -62,9 +60,7 @@ export default function HintAccordion({ hints, onHintRevealed }: HintAccordionPr
       })}
 
       {revealed === 0 && (
-        <p className="text-xs text-gray-400 dark:text-gray-500">
-          Try the problem first. Reveal hints only when genuinely stuck.
-        </p>
+        <p className="text-xs text-[#4a4a6a]">Try the problem first. Reveal hints only when genuinely stuck.</p>
       )}
     </div>
   );

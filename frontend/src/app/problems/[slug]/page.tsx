@@ -47,19 +47,11 @@ export default function ProblemDetailPage() {
   const [startTime] = useState(() => Date.now());
   const [submittedOutcome, setSubmittedOutcome] = useState<Outcome | null>(null);
 
-  function getElapsed() {
-    return Math.floor((Date.now() - startTime) / 1000);
-  }
-
-  function handleAttemptSubmitted(outcome: Outcome) {
-    setSubmittedOutcome(outcome);
-  }
+  function getElapsed() { return Math.floor((Date.now() - startTime) / 1000); }
+  function handleAttemptSubmitted(outcome: Outcome) { setSubmittedOutcome(outcome); }
 
   useEffect(() => {
-    fetchProblem(slug)
-      .then(setProblem)
-      .catch(() => setNotFound(true))
-      .finally(() => setLoading(false));
+    fetchProblem(slug).then(setProblem).catch(() => setNotFound(true)).finally(() => setLoading(false));
   }, [slug]);
 
   async function handleStartMentor() {
@@ -78,12 +70,7 @@ export default function ProblemDetailPage() {
 
   async function handleSend(text: string) {
     if (!session) return;
-    const userMsg: MentorMessage = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content: text,
-      created_at: new Date().toISOString(),
-    };
+    const userMsg: MentorMessage = { id: crypto.randomUUID(), role: "user", content: text, created_at: new Date().toISOString() };
     setMessages((prev) => [...prev, userMsg]);
     setMentorLoading(true);
     try {
@@ -91,21 +78,11 @@ export default function ProblemDetailPage() {
       setMessages((prev) => [...prev, aiMsg]);
     } catch (err: any) {
       const status = err?.response?.status;
-      const detail = err?.response?.data?.detail;
       const errorContent =
-        status === 429
-          ? "⏳ Groq rate limit reached. Please wait a minute and try again."
-          : status === 502
-          ? "⚠️ AI service is temporarily unavailable. Please try again shortly."
-          : detail ?? "Something went wrong. Please try again.";
-
-      const errMsg: MentorMessage = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: errorContent,
-        created_at: new Date().toISOString(),
-      };
-      setMessages((prev) => [...prev, errMsg]);
+        status === 429 ? "⏳ Rate limit reached. Please wait a moment and try again."
+        : status === 502 ? "⚠️ AI service unavailable. Please try again shortly."
+        : err?.response?.data?.detail ?? "Something went wrong.";
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: errorContent, created_at: new Date().toISOString() }]);
     } finally {
       setMentorLoading(false);
     }
@@ -113,39 +90,23 @@ export default function ProblemDetailPage() {
 
   function handleLanguageChange(lang: Language) {
     setLanguage(lang);
-    // Only load starter if user hasn't written anything in this language yet
-    setCodePerLanguage((prev) => ({
-      ...prev,
-      [lang]: prev[lang] ?? getStarterCode(slug, lang),
-    }));
+    setCodePerLanguage((prev) => ({ ...prev, [lang]: prev[lang] ?? getStarterCode(slug, lang) }));
   }
 
   async function handleSendWithCode() {
     if (!session) return;
     const currentCode = code.trim();
     if (!currentCode) return;
-
-    const userMsg: MentorMessage = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content: "Please review my code.",
-      created_at: new Date().toISOString(),
-    };
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "user", content: "Please review my code.", created_at: new Date().toISOString() }]);
     setMentorLoading(true);
     try {
       const aiMsg = await sendMessage(session.id, "Please review my code and tell me what's wrong or what I can improve.", currentCode);
       setMessages((prev) => [...prev, aiMsg]);
     } catch (err: any) {
       const status = err?.response?.status;
-      const errorContent =
-        status === 429
-          ? "⏳ Rate limit reached. Please wait a moment and try again."
-          : "Something went wrong. Please try again.";
       setMessages((prev) => [...prev, {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: errorContent,
+        id: crypto.randomUUID(), role: "assistant",
+        content: status === 429 ? "⏳ Rate limit reached. Please wait a moment." : "Something went wrong.",
         created_at: new Date().toISOString(),
       }]);
     } finally {
@@ -155,10 +116,10 @@ export default function ProblemDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+      <div className="flex h-screen items-center justify-center bg-[#0d0d1a]">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-          <p className="text-sm text-gray-400">Loading problem...</p>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-600 border-t-transparent" />
+          <p className="text-sm text-[#6b6b8a]">Loading problem...</p>
         </div>
       </div>
     );
@@ -166,10 +127,10 @@ export default function ProblemDetailPage() {
 
   if (notFound || !problem) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+      <div className="flex h-screen items-center justify-center bg-[#0d0d1a]">
         <div className="text-center">
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">Problem not found</p>
-          <button onClick={() => router.push("/problems")} className="mt-4 text-blue-600 hover:underline">
+          <p className="text-2xl font-bold text-white">Problem not found</p>
+          <button onClick={() => router.push("/problems")} className="mt-4 text-violet-400 hover:text-violet-300">
             ← Back to problems
           </button>
         </div>
@@ -178,12 +139,13 @@ export default function ProblemDetailPage() {
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-gray-50 dark:bg-gray-950">
+    <div className="flex h-screen flex-col overflow-hidden bg-[#0d0d1a]">
+
       {/* Top navbar */}
-      <header className="flex items-center gap-4 border-b border-gray-200 bg-white px-5 py-3 dark:border-gray-700 dark:bg-gray-900">
+      <header className="flex items-center gap-4 border-b border-[#2d2d4e] bg-[#0d0d1a] px-5 py-3">
         <button
           onClick={() => router.push("/problems")}
-          className="flex items-center gap-1.5 text-sm text-gray-500 transition hover:text-gray-900 dark:hover:text-white"
+          className="flex items-center gap-1.5 text-sm text-[#6b6b8a] transition hover:text-white"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -191,10 +153,10 @@ export default function ProblemDetailPage() {
           Problems
         </button>
 
-        <div className="h-5 w-px bg-gray-200 dark:bg-gray-700" />
+        <div className="h-5 w-px bg-[#2d2d4e]" />
 
         <div className="flex items-center gap-2.5">
-          <h1 className="text-sm font-semibold text-gray-900 dark:text-white">{problem.title}</h1>
+          <h1 className="text-sm font-semibold text-white">{problem.title}</h1>
           <DifficultyBadge difficulty={problem.difficulty} />
         </div>
 
@@ -204,8 +166,8 @@ export default function ProblemDetailPage() {
               key={t.name}
               className={`rounded-full px-2 py-0.5 text-xs ${
                 t.is_primary
-                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                  : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                  ? "bg-violet-600/20 text-violet-400"
+                  : "bg-[#1e1e30] text-[#6b6b8a]"
               }`}
             >
               {t.display_name}
@@ -217,24 +179,24 @@ export default function ProblemDetailPage() {
       {/* Main split layout */}
       <div className="flex flex-1 overflow-hidden">
 
-        {/* Left panel: problem + editor */}
-        <div className="flex w-[55%] flex-col overflow-hidden border-r border-gray-200 dark:border-gray-700">
+        {/* Left panel */}
+        <div className="flex w-[55%] flex-col overflow-hidden border-r border-[#2d2d4e]">
 
           {/* Tab bar */}
-          <div className="flex border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
+          <div className="flex border-b border-[#2d2d4e] bg-[#0d0d1a]">
             {(["problem", "hints"] as Tab[]).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-5 py-3 text-sm font-medium capitalize transition ${
                   activeTab === tab
-                    ? "border-b-2 border-blue-600 text-blue-600"
-                    : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    ? "border-b-2 border-violet-500 text-violet-400"
+                    : "text-[#6b6b8a] hover:text-white"
                 }`}
               >
                 {tab}
                 {tab === "hints" && (
-                  <span className="ml-1.5 rounded-full bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-gray-700">
+                  <span className="ml-1.5 rounded-full bg-[#2d2d4e] px-1.5 py-0.5 text-xs text-[#6b6b8a]">
                     {problem.hints.length}
                   </span>
                 )}
@@ -243,40 +205,34 @@ export default function ProblemDetailPage() {
           </div>
 
           {/* Tab content */}
-          <div className="flex-1 overflow-y-auto bg-white p-6 dark:bg-gray-900">
+          <div className="flex-1 overflow-y-auto bg-[#0d0d1a] p-6">
             {activeTab === "problem" && (
               <div className="space-y-6">
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#c0c0d8]">
                   {problem.description}
                 </p>
 
                 {problem.examples.map((ex, i) => (
-                  <div key={i} className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
-                    <p className="mb-2 text-xs font-semibold text-gray-400">Example {i + 1}</p>
-                    <p className="font-mono text-sm text-gray-700 dark:text-gray-300">
-                      <span className="font-semibold">Input:</span> {ex.input}
+                  <div key={i} className="rounded-xl border border-[#2d2d4e] bg-[#13131f] p-4">
+                    <p className="mb-2 text-xs font-semibold text-[#6b6b8a]">Example {i + 1}</p>
+                    <p className="font-mono text-sm text-[#c0c0d8]">
+                      <span className="font-semibold text-white">Input:</span> {ex.input}
                     </p>
-                    <p className="mt-1 font-mono text-sm text-gray-700 dark:text-gray-300">
-                      <span className="font-semibold">Output:</span> {ex.output}
+                    <p className="mt-1 font-mono text-sm text-[#c0c0d8]">
+                      <span className="font-semibold text-white">Output:</span> {ex.output}
                     </p>
                     {ex.explanation && (
-                      <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                        {ex.explanation}
-                      </p>
+                      <p className="mt-2 text-xs text-[#6b6b8a]">{ex.explanation}</p>
                     )}
                   </div>
                 ))}
 
                 {problem.constraints.length > 0 && (
                   <div>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                      Constraints
-                    </p>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#6b6b8a]">Constraints</p>
                     <ul className="space-y-1">
                       {problem.constraints.map((c, i) => (
-                        <li key={i} className="font-mono text-xs text-gray-600 dark:text-gray-400">
-                          • {c}
-                        </li>
+                        <li key={i} className="font-mono text-xs text-[#8080a0]">• {c}</li>
                       ))}
                     </ul>
                   </div>
@@ -284,15 +240,10 @@ export default function ProblemDetailPage() {
 
                 {problem.companies.length > 0 && (
                   <div>
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                      Asked by
-                    </p>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#6b6b8a]">Asked by</p>
                     <div className="flex flex-wrap gap-1.5">
                       {problem.companies.map((c) => (
-                        <span
-                          key={c}
-                          className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs capitalize text-gray-600 dark:bg-gray-700 dark:text-gray-300"
-                        >
+                        <span key={c} className="rounded-full border border-[#2d2d4e] bg-[#13131f] px-2.5 py-0.5 text-xs capitalize text-[#8080a0]">
                           {c}
                         </span>
                       ))}
@@ -304,7 +255,7 @@ export default function ProblemDetailPage() {
 
             {activeTab === "hints" && (
               <div>
-                <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+                <p className="mb-4 text-sm text-[#6b6b8a]">
                   Reveal hints one at a time. Try the problem before using them.
                 </p>
                 <HintAccordion
@@ -316,7 +267,7 @@ export default function ProblemDetailPage() {
           </div>
 
           {/* Code editor */}
-          <div className="h-[42%] border-t border-gray-200 p-3 pb-2 dark:border-gray-700">
+          <div className="h-[42%] border-t border-[#2d2d4e] p-3 pb-2">
             <CodeEditor
               code={code}
               language={language}
@@ -326,16 +277,16 @@ export default function ProblemDetailPage() {
           </div>
 
           {/* Submit attempt */}
-          <div className="border-t border-gray-200 px-3 py-2 dark:border-gray-700">
+          <div className="border-t border-[#2d2d4e] px-3 py-2">
             {submittedOutcome ? (
-              <div className={`rounded-lg px-4 py-2 text-center text-sm font-medium ${
+              <div className={`rounded-xl px-4 py-2 text-center text-sm font-medium ${
                 submittedOutcome === "solved"
-                  ? "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400"
+                  ? "bg-green-500/10 text-green-400 border border-green-500/20"
                   : submittedOutcome === "partial"
-                  ? "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400"
-                  : "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400"
+                  ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"
+                  : "bg-red-500/10 text-red-400 border border-red-500/20"
               }`}>
-                Attempt saved — {submittedOutcome === "solved" ? "Great work! 🎉" : submittedOutcome === "partial" ? "Keep going!" : "Come back to this one!"}
+                {submittedOutcome === "solved" ? "Great work! Attempt saved 🎉" : submittedOutcome === "partial" ? "Keep going! Attempt saved." : "Come back to this one!"}
               </div>
             ) : (
               problem && (
@@ -355,26 +306,28 @@ export default function ProblemDetailPage() {
         </div>
 
         {/* Right panel: AI Mentor */}
-        <div className="flex w-[45%] flex-col overflow-hidden bg-gray-50 p-3 dark:bg-gray-950">
+        <div className="flex w-[45%] flex-col overflow-hidden bg-[#0d0d1a] p-3">
           {!session ? (
-            <div className="flex h-full flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800/30">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-3xl dark:bg-blue-900/20">
+            <div className="flex h-full flex-col items-center justify-center gap-5 rounded-2xl border border-dashed border-[#2d2d4e]">
+              {/* Glow */}
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-violet-600/10 text-4xl">
                 🧠
+                <div className="absolute inset-0 rounded-2xl bg-violet-600/5 blur-md" />
               </div>
               <div className="text-center">
-                <p className="font-semibold text-gray-900 dark:text-white">AI Mentor</p>
-                <p className="mt-1 max-w-xs text-sm text-gray-500 dark:text-gray-400">
-                  Get personalized hints, code reviews, and concept explanations — without being given the answer.
+                <p className="font-semibold text-white">AI Mentor</p>
+                <p className="mt-1 max-w-xs text-sm text-[#6b6b8a]">
+                  Socratic hints, code reviews, and concept explanations — without being given the answer.
                 </p>
               </div>
               <button
                 onClick={handleStartMentor}
                 disabled={sessionStarting}
-                className="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
+                className="rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/30 transition hover:opacity-90 disabled:opacity-60"
               >
                 {sessionStarting ? "Starting..." : "Start Mentor Session"}
               </button>
-              <p className="text-xs text-gray-400">Login required</p>
+              <p className="text-xs text-[#4a4a6a]">Login required</p>
             </div>
           ) : (
             <MentorChat

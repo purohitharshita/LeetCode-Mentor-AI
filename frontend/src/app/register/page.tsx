@@ -17,12 +17,7 @@ export default function RegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
-      return;
-    }
-
+    if (password.length < 8) { setError("Password must be at least 8 characters"); return; }
     setLoading(true);
     try {
       const res = await register(email, name, password);
@@ -36,83 +31,50 @@ export default function RegisterPage() {
 
   return (
     <AuthLayout>
-      <div className="mb-8 lg:hidden">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-lg text-white">
-            🧠
-          </div>
-          <span className="text-lg font-semibold text-gray-900 dark:text-white">
-            LeetCode Mentor AI
-          </span>
-        </div>
+      <div className="mb-8 lg:hidden flex items-center gap-2">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-lg">🧠</div>
+        <span className="text-sm font-semibold text-white">LeetCode Mentor AI</span>
       </div>
 
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Create your account</h2>
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-        Start practicing with a mentor that adapts to you
-      </p>
+      <h2 className="text-2xl font-bold text-white">Create your account</h2>
+      <p className="mt-1 text-sm text-[#6b6b8a]">Start practicing with a mentor that adapts to you</p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         {error && (
-          <div className="rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400">
+          <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
             {error}
           </div>
         )}
 
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Name
-          </label>
-          <input
-            type="text"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
-            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-          />
-        </div>
-
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Email
-          </label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-          />
-        </div>
-
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Password
-          </label>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="At least 8 characters"
-            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-          />
-        </div>
+        {[
+          { label: "Name", value: name, set: setName, type: "text", placeholder: "Your name" },
+          { label: "Email", value: email, set: setEmail, type: "email", placeholder: "you@example.com" },
+          { label: "Password", value: password, set: setPassword, type: "password", placeholder: "At least 8 characters" },
+        ].map((f) => (
+          <div key={f.label}>
+            <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#6b6b8a]">
+              {f.label}
+            </label>
+            <input
+              type={f.type} required value={f.value}
+              onChange={(e) => f.set(e.target.value)}
+              placeholder={f.placeholder}
+              className="w-full rounded-xl border border-[#2d2d4e] bg-[#13131f] px-4 py-3 text-sm text-white placeholder-[#4a4a6a] transition focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+            />
+          </div>
+        ))}
 
         <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60"
+          type="submit" disabled={loading}
+          className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-900/30 transition hover:opacity-90 disabled:opacity-60"
         >
           {loading ? "Creating account..." : "Create account"}
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+      <p className="mt-6 text-center text-sm text-[#6b6b8a]">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-blue-600 hover:underline dark:text-blue-400">
+        <Link href="/login" className="font-medium text-violet-400 hover:text-violet-300">
           Sign in
         </Link>
       </p>
