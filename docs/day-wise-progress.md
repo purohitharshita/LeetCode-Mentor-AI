@@ -96,4 +96,26 @@
 
 ---
 
-*Last updated: Day 7*
+## Day 8 — Analytics, Profile Page, Dark Purple Theme
+
+- Built `GET /analytics/summary` endpoint — returns total attempts, solve rate, avg hints, streak, difficulty breakdown, topic mastery, recent attempts in a single call
+- Merged analytics into `/profile` page — deleted standalone `/analytics` page, profile is now the single source of truth for user stats + settings
+- Profile page: avatar, stats row, editable experience level + target companies + daily goal, topic mastery bars, recent attempts (clickable)
+- Edit mode inline — no separate edit page, changes saved via `PATCH /users/profile`
+- Applied dark purple theme (`#0d0d1a` background, violet accents, `#2d2d4e` borders) across all pages:
+  - Landing page: gradient headline, glow blobs, feature pills, stats row
+  - Login/Register: violet gradient button, dark inputs, updated `AuthLayout`
+  - Problems list: dark filter bar, violet difficulty pills, dark dropdowns, `Profile →` shortcut
+  - Problem detail: dark navbar, dark tab bar, dark examples, dark constraints, violet tab indicator
+  - `MentorChat`: violet user bubbles, dark AI bubbles, animated green status dot
+  - `HintAccordion`: dark cards, violet tier labels, locked hint styling
+  - `SubmitAttempt`: dark backdrop blur modal, violet gradient submit button
+  - `CodeEditor`: dark toolbar, muted macOS dots, dark language selector
+  - `ProblemCard`: dark cards with violet hover glow
+  - `DifficultyBadge`: translucent colored borders (green/yellow/red)
+  - `MasteryBar`: dark inline layout, "Show all" expands to 3-col grid
+- Updated `globals.css` — dark purple as default background with custom scrollbar
+
+---
+
+*Last updated: Day 8*
