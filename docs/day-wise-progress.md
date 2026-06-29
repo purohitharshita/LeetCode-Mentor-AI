@@ -84,4 +84,16 @@
 
 ---
 
-*Last updated: Day 6*
+## Day 7 — Attempt Tracking + Topic Mastery
+
+- Built 3 backend endpoints: `POST /attempts`, `GET /attempts`, `GET /attempts/mastery`
+- Mastery scoring formula: `(solved/attempted) × (1 - hint_penalty) × 100` — each hint reduces score by 5%, capped at 40% penalty
+- Built `SubmitAttempt` modal — outcome picker (Solved/Partial/Gave Up), elapsed time display, hints used counter
+- Added starter code guard — "Solved" option disabled if code is unchanged from the starter template, with warning banner
+- Built `MasteryBar` component on problems page — shows 3 weakest topics by default, "Show all" toggle reveals all topics sorted by score
+- Wired `HintAccordion` → `onHintRevealed` callback increments `hintsUsed` counter in problem page state
+- Score colors: green (≥75), yellow (≥50), orange (≥25), red (<25)
+
+---
+
+*Last updated: Day 7*
