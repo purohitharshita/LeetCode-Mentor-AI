@@ -6,6 +6,7 @@ import ProblemCard from "@/components/ProblemCard";
 import DifficultyBadge from "@/components/DifficultyBadge";
 import MasteryBar from "@/components/MasteryBar";
 import { fetchProblems, fetchTopics } from "@/lib/problems";
+import api from "@/lib/api";
 import type { ProblemListItem, Topic } from "@/lib/problems";
 
 const DIFFICULTIES = ["easy", "medium", "hard"] as const;
@@ -25,6 +26,8 @@ export default function ProblemsPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  const [recommendations, setRecommendations] = useState<ProblemListItem[]>([]);
+
   const [selectedTopic, setSelectedTopic] = useState("");
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -32,7 +35,10 @@ export default function ProblemsPage() {
 
   const PAGE_SIZE = 20;
 
-  useEffect(() => { fetchTopics().then(setTopics); }, []);
+  useEffect(() => {
+    fetchTopics().then(setTopics);
+    api.get("/v1/recommendations").then((r) => setRecommendations(r.data)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -83,6 +89,24 @@ export default function ProblemsPage() {
         <div className="mb-6">
           <MasteryBar />
         </div>
+
+        {/* Recommendations */}
+        {recommendations.length > 0 && (
+          <div className="mb-6 rounded-2xl border border-violet-500/20 bg-violet-600/5 p-5">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="text-base">🎯</span>
+              <p className="text-sm font-semibold text-violet-300">Recommended for you</p>
+              <span className="rounded-full bg-violet-600/20 px-2 py-0.5 text-xs text-violet-400">
+                Based on weak topics
+              </span>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {recommendations.map((p) => (
+                <ProblemCard key={p.id} problem={p} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Filter bar */}
         <div className="mb-6 flex flex-wrap items-center gap-3">

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import analytics, attempt, auth, health, mentor, problems, users
+from app.api.v1.endpoints import analytics, attempt, auth, health, mentor, problems, recommendations, users
 
 router = APIRouter()
 
@@ -11,3 +11,4 @@ router.include_router(problems.router, prefix="/problems", tags=["problems"])
 router.include_router(mentor.router, prefix="/mentor", tags=["mentor"])
 router.include_router(attempt.router, prefix="/attempts", tags=["attempts"])
 router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
+router.include_router(recommendations.router, prefix="/recommendations", tags=["recommendations"])

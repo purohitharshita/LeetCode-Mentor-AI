@@ -7,21 +7,9 @@ import { updateProfile } from "@/lib/auth";
 const STEPS = ["Experience", "Companies", "Schedule"] as const;
 
 const EXPERIENCE_OPTIONS = [
-  {
-    value: "beginner",
-    label: "Beginner",
-    description: "New to DSA, just started learning algorithms and data structures",
-  },
-  {
-    value: "intermediate",
-    label: "Intermediate",
-    description: "Know the basics, actively preparing for technical interviews",
-  },
-  {
-    value: "advanced",
-    label: "Advanced",
-    description: "Targeting FAANG, need focused practice on hard problems",
-  },
+  { value: "beginner", label: "Beginner", icon: "🌱", description: "New to DSA, just started learning algorithms and data structures" },
+  { value: "intermediate", label: "Intermediate", icon: "⚡", description: "Know the basics, actively preparing for technical interviews" },
+  { value: "advanced", label: "Advanced", icon: "🚀", description: "Targeting FAANG, need focused practice on hard problems" },
 ] as const;
 
 const COMPANY_OPTIONS = [
@@ -34,16 +22,15 @@ const COMPANY_OPTIONS = [
 ];
 
 const TIME_OPTIONS = [
-  { label: "30 min / day", value: 0.5 },
-  { label: "1 hour / day", value: 1 },
-  { label: "2+ hours / day", value: 2 },
+  { label: "30 min / day", value: 0.5, icon: "⚡" },
+  { label: "1 hour / day", value: 1, icon: "🎯" },
+  { label: "2+ hours / day", value: 2, icon: "🔥" },
 ];
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
-
   const [experienceLevel, setExperienceLevel] = useState<"beginner" | "intermediate" | "advanced">("beginner");
   const [targetCompanies, setTargetCompanies] = useState<string[]>([]);
   const [hoursPerDay, setHoursPerDay] = useState(1);
@@ -57,78 +44,76 @@ export default function OnboardingPage() {
   async function handleFinish() {
     setSaving(true);
     try {
-      await updateProfile({
-        experience_level: experienceLevel,
-        target_companies: targetCompanies,
-        available_hours_per_day: hoursPerDay,
-        onboarding_completed: true,
-      });
+      await updateProfile({ experience_level: experienceLevel, target_companies: targetCompanies, available_hours_per_day: hoursPerDay, onboarding_completed: true });
       router.push("/problems");
-    } catch {
-      setSaving(false);
-    }
+    } catch { setSaving(false); }
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-4 dark:bg-gray-950">
-      <div className="w-full max-w-lg">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-[#0d0d1a] px-4">
+      {/* Glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-1/3 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-700/20 blur-[80px]" />
+      </div>
+
+      <div className="relative w-full max-w-lg">
+        {/* Logo */}
+        <div className="mb-8 flex items-center justify-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-600/20 text-base">🧠</div>
+          <span className="text-sm font-semibold text-white">LeetCode Mentor AI</span>
+        </div>
 
         {/* Progress */}
         <div className="mb-8">
-          <div className="mb-2 flex justify-between text-xs text-gray-400">
+          <div className="mb-2 flex justify-between">
             {STEPS.map((s, i) => (
-              <span key={s} className={i <= step ? "text-blue-600 font-medium dark:text-blue-400" : ""}>
+              <span key={s} className={`text-xs font-medium transition ${i <= step ? "text-violet-400" : "text-[#4a4a6a]"}`}>
                 {s}
               </span>
             ))}
           </div>
-          <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
+          <div className="h-1 w-full rounded-full bg-[#2d2d4e]">
             <div
-              className="h-1.5 rounded-full bg-blue-600 transition-all duration-300"
+              className="h-1 rounded-full bg-gradient-to-r from-violet-600 to-purple-500 transition-all duration-300"
               style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
             />
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <div className="rounded-2xl border border-[#2d2d4e] bg-[#13131f] p-8">
 
-          {/* Step 1 — Experience */}
+          {/* Step 1 */}
           {step === 0 && (
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                What's your experience level?
-              </h2>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                This helps us recommend the right problems for you.
-              </p>
+              <h2 className="text-xl font-bold text-white">What's your experience level?</h2>
+              <p className="mt-1 text-sm text-[#6b6b8a]">This helps us recommend the right problems for you.</p>
               <div className="mt-6 space-y-3">
                 {EXPERIENCE_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => setExperienceLevel(opt.value)}
-                    className={`w-full rounded-xl border-2 p-4 text-left transition ${
+                    className={`flex w-full items-center gap-4 rounded-xl border-2 p-4 text-left transition ${
                       experienceLevel === opt.value
-                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                        : "border-gray-200 hover:border-gray-300 dark:border-gray-700"
+                        ? "border-violet-500 bg-violet-600/10"
+                        : "border-[#2d2d4e] hover:border-[#3d3d5e]"
                     }`}
                   >
-                    <p className="font-semibold text-gray-900 dark:text-white">{opt.label}</p>
-                    <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">{opt.description}</p>
+                    <span className="text-2xl">{opt.icon}</span>
+                    <div>
+                      <p className="font-semibold text-white">{opt.label}</p>
+                      <p className="mt-0.5 text-xs text-[#6b6b8a]">{opt.description}</p>
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Step 2 — Companies */}
+          {/* Step 2 */}
           {step === 1 && (
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                Which companies are you targeting?
-              </h2>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                We'll prioritize problems frequently asked at your target companies.
-              </p>
+              <h2 className="text-xl font-bold text-white">Which companies are you targeting?</h2>
+              <p className="mt-1 text-sm text-[#6b6b8a]">We'll prioritize problems from your target companies.</p>
               <div className="mt-6 grid grid-cols-2 gap-3">
                 {COMPANY_OPTIONS.map((c) => (
                   <button
@@ -136,41 +121,39 @@ export default function OnboardingPage() {
                     onClick={() => toggleCompany(c.value)}
                     className={`rounded-xl border-2 py-3 text-sm font-medium transition ${
                       targetCompanies.includes(c.value)
-                        ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300"
-                        : "border-gray-200 text-gray-700 hover:border-gray-300 dark:border-gray-700 dark:text-gray-300"
+                        ? "border-violet-500 bg-violet-600/10 text-violet-300"
+                        : "border-[#2d2d4e] text-[#6b6b8a] hover:border-[#3d3d5e] hover:text-white"
                     }`}
                   >
                     {c.label}
                   </button>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-gray-400">
+              <p className="mt-3 text-xs text-[#4a4a6a]">
                 {targetCompanies.length === 0 ? "Skip to see all problems" : `${targetCompanies.length} selected`}
               </p>
             </div>
           )}
 
-          {/* Step 3 — Schedule */}
+          {/* Step 3 */}
           {step === 2 && (
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                How much time can you practice daily?
-              </h2>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                We'll pace your learning roadmap around your schedule.
-              </p>
+              <h2 className="text-xl font-bold text-white">How much time can you practice daily?</h2>
+              <p className="mt-1 text-sm text-[#6b6b8a]">We'll pace your learning roadmap around your schedule.</p>
               <div className="mt-6 space-y-3">
                 {TIME_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => setHoursPerDay(opt.value)}
-                    className={`w-full rounded-xl border-2 p-4 text-left transition ${
+                    className={`flex w-full items-center gap-4 rounded-xl border-2 p-4 text-left transition ${
                       hoursPerDay === opt.value
-                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                        : "border-gray-200 hover:border-gray-300 dark:border-gray-700"
+                        ? "border-violet-500 bg-violet-600/10"
+                        : "border-[#2d2d4e] hover:border-[#3d3d5e]"
                     }`}
                   >
-                    <p className="font-semibold text-gray-900 dark:text-white">{opt.label}</p>
+                    <span className="text-2xl">{opt.icon}</span>
+                    <p className="font-semibold text-white">{opt.label}</p>
+                    {hoursPerDay === opt.value && <span className="ml-auto text-violet-400">✓</span>}
                   </button>
                 ))}
               </div>
@@ -182,15 +165,14 @@ export default function OnboardingPage() {
             <button
               onClick={() => setStep((s) => s - 1)}
               disabled={step === 0}
-              className="rounded-lg px-4 py-2 text-sm text-gray-500 hover:text-gray-700 disabled:opacity-0"
+              className="rounded-xl px-4 py-2 text-sm text-[#6b6b8a] transition hover:text-white disabled:opacity-0"
             >
               Back
             </button>
-
             {step < STEPS.length - 1 ? (
               <button
                 onClick={() => setStep((s) => s + 1)}
-                className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                className="rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
               >
                 Continue
               </button>
@@ -198,7 +180,7 @@ export default function OnboardingPage() {
               <button
                 onClick={handleFinish}
                 disabled={saving}
-                className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                className="rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
               >
                 {saving ? "Saving..." : "Start Learning →"}
               </button>
